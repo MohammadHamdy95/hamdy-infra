@@ -55,8 +55,7 @@ Then open (browsers resolve `*.localhost` to 127.0.0.1 automatically):
 |---|---|
 | http://hamdy.localhost | portfolio |
 | http://s.localhost | shortener UI (`/api/*` → backend, other paths → redirect) |
-| http://paste.localhost | paste UI |
-| http://api.paste.localhost | paste API |
+| http://paste.localhost | paste UI (`/v1/*` → backend, other paths → UI) |
 
 Same Caddy routing shape as prod (`Caddyfile.dev` mirrors `Caddyfile`), so if
 it works locally, the prod wiring is the same. For CLI testing use

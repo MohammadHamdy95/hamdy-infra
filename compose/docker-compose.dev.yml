@@ -62,8 +62,7 @@ services:
       SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
       SPRING_CASSANDRA_KEYSPACE_NAME: paste
       PASTE_PUBLIC_URL: http://paste.localhost
-      PASTE_API_PUBLIC_URL: http://api.paste.localhost
-      PASTE_CORS_ORIGINS: http://paste.localhost
+      PASTE_API_PUBLIC_URL: http://paste.localhost
     depends_on:
       cassandra:
         condition: service_healthy

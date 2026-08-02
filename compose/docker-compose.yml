@@ -51,10 +51,7 @@ services:
       - internal
 
   paste-frontend:
-    build:
-      context: ../../paste-frontend
-      args:
-        VITE_API_URL: https://api.paste.hamdy.app
+    build: ../../paste-frontend
     restart: unless-stopped
     networks:
       - web
@@ -68,8 +65,7 @@ services:
       SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
       SPRING_CASSANDRA_KEYSPACE_NAME: paste
       PASTE_PUBLIC_URL: https://paste.hamdy.app
-      PASTE_API_PUBLIC_URL: https://api.paste.hamdy.app
-      PASTE_CORS_ORIGINS: https://paste.hamdy.app
+      PASTE_API_PUBLIC_URL: https://paste.hamdy.app
     depends_on:
       cassandra:
         condition: service_healthy

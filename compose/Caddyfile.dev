@@ -19,10 +19,12 @@ http://s.localhost {
     }
 }
 
+# paste.localhost — /v1/* → API, everything else → UI (same-origin, like prod)
 http://paste.localhost {
-    reverse_proxy paste-frontend:80
-}
-
-http://api.paste.localhost {
-    reverse_proxy paste-backend:8080
+    handle /v1/* {
+        reverse_proxy paste-backend:8080
+    }
+    handle {
+        reverse_proxy paste-frontend:80
+    }
 }

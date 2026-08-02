@@ -19,9 +19,8 @@ variable "apps" {
   description = "Map of subdomain (\"@\" for apex) => description"
   type        = map(string)
   default = {
-    "@"         = "hamdy-app - flagship portfolio"
-    "s"         = "URL shortener (UI + short links)"
-    "paste"     = "paste app UI"
-    "api.paste" = "paste API"
+    "@"     = "hamdy-app - flagship portfolio"
+    "s"     = "URL shortener (UI + short links)"
+    "paste" = "paste app (UI + API, path-routed)"
   }
 }

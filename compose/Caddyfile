@@ -20,12 +20,14 @@ http://s.hamdy.app {
     }
 }
 
-# paste.hamdy.app — paste app UI
+# paste.hamdy.app — /v1/* → API, everything else → UI (same-origin,
+# no CORS; Cloudflare's free-plan cert only covers one subdomain level
+# so api.paste.hamdy.app was never an option)
 http://paste.hamdy.app {
-    reverse_proxy paste-frontend:80
-}
-
-# api.paste.hamdy.app — paste API
-http://api.paste.hamdy.app {
-    reverse_proxy paste-backend:8080
+    handle /v1/* {
+        reverse_proxy paste-backend:8080
+    }
+    handle {
+        reverse_proxy paste-frontend:80
+    }
 }
