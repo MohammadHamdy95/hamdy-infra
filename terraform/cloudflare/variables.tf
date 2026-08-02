@@ -20,7 +20,7 @@ variable "apps" {
   type        = map(string)
   default = {
     "@"     = "hamdy-app - flagship portfolio"
-    "s"     = "URL shortener (UI + short links)"
+    "tiny"  = "URL shortener (UI + short links)"
     "paste" = "paste app (UI + API, path-routed)"
   }
 }
