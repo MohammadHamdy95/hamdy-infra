@@ -2,7 +2,7 @@
 # Browsers resolve *.localhost to 127.0.0.1 automatically.
 
 http://hamdy.localhost {
-    reverse_proxy hamdy-app:3000
+    reverse_proxy hamdy-app:80
 }
 
 # s.localhost — URL shortener: / → UI, /api/* → backend, /:slug → redirect

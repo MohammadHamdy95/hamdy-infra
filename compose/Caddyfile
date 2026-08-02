@@ -3,7 +3,7 @@
 
 # hamdy.app — flagship portfolio
 # http://hamdy.app {
-#     reverse_proxy hamdy-app:3000
+#     reverse_proxy hamdy-app:80
 # }
 
 # s.hamdy.app — URL shortener: / → UI, /api/* and /:slug → backend
