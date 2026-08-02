@@ -51,7 +51,10 @@ services:
       - internal
 
   paste-frontend:
-    build: ../../paste-frontend
+    build:
+      context: ../../paste-frontend
+      args:
+        VITE_API_URL: https://api.paste.hamdy.app
     restart: unless-stopped
     networks:
       - web
