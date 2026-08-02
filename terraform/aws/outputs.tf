@@ -7,12 +7,12 @@ output "links_table_arn" {
 }
 
 output "shortener_access_key_id" {
-  description = "AWS_ACCESS_KEY_ID for the shortener backend (compose/.env)"
+  description = "SHORTENER_AWS_ACCESS_KEY_ID for compose/.env — narrow IAM user, not your deployer credentials"
   value       = aws_iam_access_key.shortener_backend.id
 }
 
 output "shortener_secret_access_key" {
-  description = "AWS_SECRET_ACCESS_KEY for the shortener backend (compose/.env)"
+  description = "SHORTENER_AWS_SECRET_ACCESS_KEY for compose/.env — narrow IAM user, not your deployer credentials"
   value       = aws_iam_access_key.shortener_backend.secret
   sensitive   = true
 }

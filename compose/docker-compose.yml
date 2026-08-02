@@ -24,6 +24,9 @@ services:
   # hamdy-app:
   # shortener-frontend:
   # shortener-backend:
+  #   environment:
+  #     AWS_ACCESS_KEY_ID: ${SHORTENER_AWS_ACCESS_KEY_ID}       # narrow IAM user, not your deployer creds
+  #     AWS_SECRET_ACCESS_KEY: ${SHORTENER_AWS_SECRET_ACCESS_KEY}
   # paste-frontend:
   # paste-backend:
 

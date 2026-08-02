@@ -20,11 +20,21 @@ decisions/               # ADRs — one short md per big choice
 
 ## Secrets
 
-Nothing sensitive is ever committed. Required environment:
+Nothing sensitive is ever committed. `.env.example` (this directory) is the
+master reference listing every secret the platform needs and where it's
+consumed — copy it to `.env` and fill in for your own records, then copy
+the relevant values into:
 
-- `CLOUDFLARE_API_TOKEN` — for `terraform/cloudflare`
-- AWS credentials (`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`) — for `terraform/aws`
-- App runtime secrets go in `compose/.env` (gitignored; see `.env.example`)
+- your shell, ad-hoc, before `terraform apply` (Cloudflare token, AWS
+  deployer credentials)
+- `compose/.env` (gitignored; see `compose/.env.example`) — the tunnel
+  token and the shortener's app-runtime AWS credentials
+
+**The two AWS credential pairs are different identities** — your own
+deployer credentials (used to run `terraform apply`, needs DynamoDB/IAM
+permissions) vs. the narrow IAM user `terraform/aws` creates for the
+shortener backend (links table only, output by that stack). Keep them
+in separate env vars; see `.env.example` for the full explanation.
 
 ## Local testing (no Cloudflare, no AWS needed)
 
