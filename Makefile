@@ -19,7 +19,7 @@ prod-down:
 	docker compose -f compose/docker-compose.yml down
 
 update: ## git pull every repo, then stop + rebuild + start (run on the server)
-	@for repo in ../hamdy-app ../shortener-frontend ../shortener-backend ../paste-frontend ../paste-backend .; do \
+	@for repo in ../hamdy-app ../tiny-frontend ../tiny-backend ../paste-frontend ../paste-backend .; do \
 		echo "==> git pull in $$repo"; \
 		(cd $$repo && git pull) || exit 1; \
 	done

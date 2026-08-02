@@ -49,13 +49,13 @@ resource "aws_dynamodb_table" "links" {
 # Identity the backend container runs as. Long-lived keys are the
 # pragmatic choice for a service living outside AWS (no role to assume
 # from a home server); blast radius is capped by the policy below.
-resource "aws_iam_user" "shortener_backend" {
-  name = "shortener-backend"
+resource "aws_iam_user" "tiny_backend" {
+  name = "tiny-backend"
 }
 
 resource "aws_iam_user_policy" "links_rw" {
   name = "links-table-rw"
-  user = aws_iam_user.shortener_backend.name
+  user = aws_iam_user.tiny_backend.name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -77,6 +77,6 @@ resource "aws_iam_user_policy" "links_rw" {
 # Access key for the backend. The secret lands in Terraform state —
 # acceptable for a single-operator project with private state; rotate
 # by tainting this resource.
-resource "aws_iam_access_key" "shortener_backend" {
-  user = aws_iam_user.shortener_backend.name
+resource "aws_iam_access_key" "tiny_backend" {
+  user = aws_iam_user.tiny_backend.name
 }

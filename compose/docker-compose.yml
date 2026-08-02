@@ -31,21 +31,21 @@ services:
     networks:
       - web
 
-  shortener-frontend:
-    build: ../../shortener-frontend
+  tiny-frontend:
+    build: ../../tiny-frontend
     restart: unless-stopped
     networks:
       - web
 
-  shortener-backend:
-    build: ../../shortener-backend
+  tiny-backend:
+    build: ../../tiny-backend
     restart: unless-stopped
     environment:
       # Narrow IAM user from terraform/aws — NOT your deployer credentials.
-      AWS_ACCESS_KEY_ID: ${SHORTENER_AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${SHORTENER_AWS_SECRET_ACCESS_KEY}
+      AWS_ACCESS_KEY_ID: ${TINY_AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${TINY_AWS_SECRET_ACCESS_KEY}
       AWS_REGION: us-west-2
-      SHORTENER_PUBLIC_URL: https://s.hamdy.app
+      TINY_PUBLIC_URL: https://tiny.hamdy.app
     networks:
       - web
       - internal

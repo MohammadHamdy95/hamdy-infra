@@ -32,7 +32,7 @@ server, in whatever parent directory you want the platform to live in:
 
 ```bash
 mkdir -p hamdy-platform && cd hamdy-platform
-for repo in hamdy-app shortener-frontend shortener-backend paste-frontend paste-backend hamdy-infra; do
+for repo in hamdy-app tiny-frontend tiny-backend paste-frontend paste-backend hamdy-infra; do
   gh repo clone MohammadHamdy95/$repo
 done
 ```
@@ -82,8 +82,8 @@ Run from **your own machine**, not the server.
    Save the app's runtime credentials for the server's `.env`:
 
    ```bash
-   terraform output shortener_access_key_id
-   terraform output -raw shortener_secret_access_key
+   terraform output tiny_access_key_id
+   terraform output -raw tiny_secret_access_key
    ```
 
 4. On the **server**, in `hamdy-infra/compose/`:
@@ -93,7 +93,7 @@ Run from **your own machine**, not the server.
    ```
 
    Fill in the three values from steps 2–3: `TUNNEL_TOKEN`,
-   `SHORTENER_AWS_ACCESS_KEY_ID`, `SHORTENER_AWS_SECRET_ACCESS_KEY`.
+   `TINY_AWS_ACCESS_KEY_ID`, `TINY_AWS_SECRET_ACCESS_KEY`.
    However you copy them over (scp, paste over SSH, a password manager),
    never commit this file — it's gitignored, and it should stay that way.
 
@@ -122,11 +122,11 @@ A few concrete cases:
   want to rotate it on a schedule:
   ```bash
   cd terraform/aws
-  terraform taint aws_iam_access_key.shortener_backend
+  terraform taint aws_iam_access_key.tiny_backend
   terraform apply
   ```
-  Then update `SHORTENER_AWS_ACCESS_KEY_ID`/`SECRET` in the server's
-  `compose/.env` and restart the shortener-backend service (see below).
+  Then update `TINY_AWS_ACCESS_KEY_ID`/`SECRET` in the server's
+  `compose/.env` and restart the tiny-backend service (see below).
 - **Changing the DynamoDB table or IAM policy** — edit
   `terraform/aws/main.tf`, `terraform plan` to sanity-check, `apply`.
 
@@ -176,5 +176,5 @@ docker compose -f compose/docker-compose.yml up -d
 `.env`):
 
 ```bash
-docker compose -f compose/docker-compose.yml up -d --force-recreate shortener-backend
+docker compose -f compose/docker-compose.yml up -d --force-recreate tiny-backend
 ```

@@ -6,17 +6,17 @@ http://hamdy.app {
     reverse_proxy hamdy-app:80
 }
 
-# s.hamdy.app — URL shortener: / → UI, /api/* and /:slug → backend
-http://s.hamdy.app {
+# tiny.hamdy.app — URL shortener: / → UI, /api/* and /:slug → backend
+http://tiny.hamdy.app {
     handle /api/* {
-        reverse_proxy shortener-backend:8080
+        reverse_proxy tiny-backend:8080
     }
     @frontend path / /assets/* /favicon.svg /icons.svg
     handle @frontend {
-        reverse_proxy shortener-frontend:80
+        reverse_proxy tiny-frontend:80
     }
     handle {
-        reverse_proxy shortener-backend:8080
+        reverse_proxy tiny-backend:8080
     }
 }
 

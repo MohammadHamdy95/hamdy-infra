@@ -54,12 +54,12 @@ Then open (browsers resolve `*.localhost` to 127.0.0.1 automatically):
 | URL | App |
 |---|---|
 | http://hamdy.localhost | portfolio |
-| http://s.localhost | shortener UI (`/api/*` → backend, other paths → redirect) |
+| http://tiny.localhost | shortener UI (`/api/*` → backend, other paths → redirect) |
 | http://paste.localhost | paste UI (`/v1/*` → backend, other paths → UI) |
 
 Same Caddy routing shape as prod (`Caddyfile.dev` mirrors `Caddyfile`), so if
 it works locally, the prod wiring is the same. For CLI testing use
-`curl -H "Host: s.localhost" http://localhost/...` (curl doesn't resolve
+`curl -H "Host: tiny.localhost" http://localhost/...` (curl doesn't resolve
 `*.localhost` subdomains).
 
 ## Deploying to the server

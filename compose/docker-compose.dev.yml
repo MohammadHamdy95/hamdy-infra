@@ -4,7 +4,7 @@
 #
 #   docker compose -f docker-compose.dev.yml up -d --build
 #
-# Then open http://hamdy.localhost, http://s.localhost, http://paste.localhost
+# Then open http://hamdy.localhost, http://tiny.localhost, http://paste.localhost
 
 name: hamdy-platform-dev
 
@@ -25,14 +25,14 @@ services:
     networks:
       - web
 
-  shortener-frontend:
-    build: ../../shortener-frontend
+  tiny-frontend:
+    build: ../../tiny-frontend
     restart: unless-stopped
     networks:
       - web
 
-  shortener-backend:
-    build: ../../shortener-backend
+  tiny-backend:
+    build: ../../tiny-backend
     restart: unless-stopped
     environment:
       # DynamoDB Local stand-in for AWS — any non-empty credentials work
@@ -40,7 +40,7 @@ services:
       AWS_SECRET_ACCESS_KEY: local
       AWS_REGION: us-west-2
       DYNAMODB_ENDPOINT: http://dynamodb-local:8000
-      SHORTENER_PUBLIC_URL: http://s.localhost
+      TINY_PUBLIC_URL: http://tiny.localhost
     depends_on:
       - dynamodb-local
     networks:
