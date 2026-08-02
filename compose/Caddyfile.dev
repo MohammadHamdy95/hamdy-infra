@@ -10,7 +10,7 @@ http://s.localhost {
     handle /api/* {
         reverse_proxy shortener-backend:8080
     }
-    handle / {
+    handle / /assets/* /favicon.svg /icons.svg {
         reverse_proxy shortener-frontend:80
     }
     handle {
