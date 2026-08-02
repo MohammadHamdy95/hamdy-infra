@@ -1,0 +1,39 @@
+name: hamdy-platform
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    networks:
+      - web
+
+  # --- apps (added as they come online; images from GHCR) ---
+  # hamdy-app:
+  # shortener-frontend:
+  # shortener-backend:
+  # paste-frontend:
+  # paste-backend:
+
+  # --- datastores (internal network ONLY, never published to host) ---
+  # cassandra:
+
+networks:
+  web:
+  internal:
+
+volumes:
+  caddy_data:
+  caddy_config:

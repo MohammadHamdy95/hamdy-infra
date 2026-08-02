@@ -1,0 +1,14 @@
+# secrets
+.env
+*.tfvars
+!*.tfvars.example
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+
+# misc
+.DS_Store
