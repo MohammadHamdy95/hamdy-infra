@@ -1,7 +1,7 @@
 variable "region" {
   description = "AWS region"
   type        = string
-  default     = "eu-central-1"
+  default     = "us-west-2"
 }
 
 variable "table_name" {
