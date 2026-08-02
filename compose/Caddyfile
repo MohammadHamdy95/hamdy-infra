@@ -11,7 +11,8 @@ http://s.hamdy.app {
     handle /api/* {
         reverse_proxy shortener-backend:8080
     }
-    handle / /assets/* /favicon.svg /icons.svg {
+    @frontend path / /assets/* /favicon.svg /icons.svg
+    handle @frontend {
         reverse_proxy shortener-frontend:80
     }
     handle {
