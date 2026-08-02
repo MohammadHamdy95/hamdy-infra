@@ -158,7 +158,16 @@ docker compose -f compose/docker-compose.yml logs -f      # follow all logs
 docker compose -f compose/docker-compose.yml logs -f paste-backend   # just one service
 ```
 
-**Picking up new app code** (after `git pull` in one of the app repos):
+**Picking up new app code** — pull all six repos (run from `hamdy-infra`,
+assumes `gh auth login` was already done):
+
+```bash
+for repo in ../hamdy-app ../shortener-frontend ../shortener-backend ../paste-frontend ../paste-backend ../hamdy-infra; do
+  (cd "$repo" && git pull)
+done
+```
+
+Then rebuild:
 
 ```bash
 make prod   # re-runs `up -d --build` — only rebuilds what changed
