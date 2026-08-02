@@ -63,10 +63,8 @@ it works locally, the prod wiring is the same. For CLI testing use
 `curl -H "Host: s.localhost" http://localhost/...` (curl doesn't resolve
 `*.localhost` subdomains).
 
-## Prod bring-up (on the server)
+## Deploying to the server
 
-```
-cd compose
-cp .env.example .env   # fill in TUNNEL_TOKEN etc.
-docker compose up -d
-```
+See [`DEPLOY.md`](DEPLOY.md): cloning the repos onto the server, the
+one-time `terraform apply` that creates the cloud resources, updating
+those resources later, and starting/stopping the Compose stack.

@@ -2,29 +2,29 @@
 # delivers plain HTTP to Caddy, so sites are declared as http://.
 
 # hamdy.app — flagship portfolio
-# http://hamdy.app {
-#     reverse_proxy hamdy-app:80
-# }
+http://hamdy.app {
+    reverse_proxy hamdy-app:80
+}
 
 # s.hamdy.app — URL shortener: / → UI, /api/* and /:slug → backend
-# http://s.hamdy.app {
-#     handle /api/* {
-#         reverse_proxy shortener-backend:8080
-#     }
-#     handle / {
-#         reverse_proxy shortener-frontend:80
-#     }
-#     handle {
-#         reverse_proxy shortener-backend:8080
-#     }
-# }
+http://s.hamdy.app {
+    handle /api/* {
+        reverse_proxy shortener-backend:8080
+    }
+    handle / {
+        reverse_proxy shortener-frontend:80
+    }
+    handle {
+        reverse_proxy shortener-backend:8080
+    }
+}
 
 # paste.hamdy.app — paste app UI
-# http://paste.hamdy.app {
-#     reverse_proxy paste-frontend:80
-# }
+http://paste.hamdy.app {
+    reverse_proxy paste-frontend:80
+}
 
 # api.paste.hamdy.app — paste API
-# http://api.paste.hamdy.app {
-#     reverse_proxy paste-backend:8080
-# }
+http://api.paste.hamdy.app {
+    reverse_proxy paste-backend:8080
+}
