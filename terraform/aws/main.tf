@@ -67,8 +67,6 @@ resource "aws_iam_user_policy" "links_rw" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Scan",
         ]
         Resource = aws_dynamodb_table.links.arn
       },
