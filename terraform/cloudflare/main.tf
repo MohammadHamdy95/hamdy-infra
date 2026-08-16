@@ -68,3 +68,29 @@ resource "cloudflare_dns_record" "apps" {
   ttl     = 1 # auto (required when proxied)
   comment = each.value
 }
+
+# --- The one exception to "everything through the tunnel" -----------------
+#
+# Minecraft's protocol is raw TCP on port 25565, not HTTP. A Cloudflare
+# Tunnel carries HTTP; proxying arbitrary TCP needs Spectrum, which is
+# Enterprise-only. So the game port is a real port-forward on the router and
+# this record is deliberately unproxied (grey cloud) — it publishes the home
+# IP, which every other record avoids. See decisions/0002 for the full
+# rationale and the mitigations that keep the exposure to one port.
+#
+# Deliberately NOT in var.apps: everything in that map is proxied and routed
+# to Caddy through the tunnel, and this is neither.
+resource "cloudflare_dns_record" "game" {
+  zone_id = var.zone_id
+  name    = "${var.game_subdomain}.${var.zone}"
+  type    = "A"
+  content = var.home_ip
+  proxied = false
+  ttl     = 300 # short: a residential IP can change, DDNS rewrites this
+  comment = "Minecraft — unproxied by necessity, see decisions/0002"
+
+  # The DDNS container owns this value at runtime; don't fight it on apply.
+  lifecycle {
+    ignore_changes = [content]
+  }
+}

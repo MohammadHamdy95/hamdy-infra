@@ -1,0 +1,151 @@
+# Pterodactyl — game server management for mc.hamdy.app.
+#
+# Deliberately a SEPARATE stack from the platform's docker-compose.yml:
+# `make update` does prod-down + prod, which would kill a live Minecraft
+# server every time an app is redeployed. Game servers have their own
+# lifecycle, so they get their own stack.
+#
+# Only the panel is here. Wings (the daemon that actually spawns game server
+# containers) runs as a systemd service on the host — it drives the host
+# Docker daemon, so containerising it buys nothing and breaks path mapping.
+# See ../../DEPLOY.md.
+#
+# Nothing publishes a host port. Caddy in the platform stack reaches the
+# panel over the shared `web` network and is the only way in, exactly like
+# every other app here.
+
+name: pterodactyl
+
+services:
+  panel:
+    image: ghcr.io/pterodactyl/panel:v1.15.1
+    restart: unless-stopped
+    environment:
+      APP_URL: https://panel.hamdy.app
+      APP_TIMEZONE: America/New_York
+      APP_SERVICE_AUTHOR: ${PTERO_SERVICE_AUTHOR}
+      APP_ENV: production
+      APP_ENVIRONMENT_ONLY: "false"
+      # TLS terminates at Cloudflare; the tunnel and Caddy both forward
+      # plain HTTP, so Laravel must trust the X-Forwarded-* headers or it
+      # generates http:// URLs and breaks the console websocket.
+      TRUSTED_PROXIES: "*"
+      CACHE_DRIVER: redis
+      SESSION_DRIVER: redis
+      QUEUE_DRIVER: redis
+      REDIS_HOST: cache
+      DB_HOST: database
+      DB_PORT: "3306"
+      DB_DATABASE: panel
+      DB_USERNAME: pterodactyl
+      DB_PASSWORD: ${PTERO_DB_PASSWORD}
+      HASHIDS_LENGTH: "8"
+      # LE_EMAIL intentionally unset — with no value the entrypoint writes
+      # an HTTP-only nginx config, which is what we want behind Caddy.
+    volumes:
+      # CRITICAL: holds the generated APP_KEY and HASHIDS_SALT. Losing this
+      # volume invalidates every encrypted value in the database, including
+      # the node's Wings token — the node would go offline and need
+      # recreating. Back it up with the database.
+      - panel_var:/app/var
+      - panel_nginx:/etc/nginx/http.d
+      - panel_logs:/app/storage/logs
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+    networks:
+      - web       # reachable by the platform's Caddy
+      - internal  # reachable to database + cache
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # --- datastores (internal network ONLY, never published to the host) ---
+
+  database:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: panel
+      MARIADB_USER: pterodactyl
+      MARIADB_PASSWORD: ${PTERO_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${PTERO_DB_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  cache:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  # --- dynamic DNS for the one unproxied record ------------------------
+  #
+  # mc.hamdy.app is an A record pointing at this house's public IP (see
+  # decisions/0002). AT&T hands out a dynamic address, so when it rotates
+  # the record has to follow or nobody can connect. Scoped to that single
+  # hostname — it never touches the proxied records Terraform owns.
+  ddns:
+    image: favonia/cloudflare-ddns:latest
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CF_DDNS_TOKEN}
+      DOMAINS: mc.hamdy.app
+      IP4_PROVIDER: cloudflare.trace
+      IP6_PROVIDER: none      # the A record is what players resolve
+      PROXIED: "false"        # must stay grey-cloud; Minecraft is raw TCP
+      TTL: "300"
+      UPDATE_CRON: "@every 5m"
+      DELETE_ON_STOP: "false" # never remove the record just because we restarted
+      TZ: America/New_York
+    networks:
+      - internal
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+networks:
+  # The platform stack's network, created by compose/docker-compose.yml.
+  # Joining it is what lets Caddy reverse_proxy to `panel:80`.
+  web:
+    external: true
+    name: hamdy-platform_web
+
+  # Pinned subnet: 172.17–172.21 are already taken by docker0 and the other
+  # stacks, and Wings owns 172.22 for wings0. Left to itself Docker would
+  # eventually pick one of those and fail to start.
+  internal:
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+
+volumes:
+  panel_var:
+  panel_nginx:
+  panel_logs:
+  db_data:

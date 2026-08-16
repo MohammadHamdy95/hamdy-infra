@@ -31,3 +31,22 @@ http://paste.hamdy.app {
         reverse_proxy paste-frontend:80
     }
 }
+
+# panel.hamdy.app — Pterodactyl. Lives in its own stack (see
+# pterodactyl/compose.yaml) but joins this stack's `web` network, so it
+# resolves by service name like any local container.
+http://panel.hamdy.app {
+    reverse_proxy panel:80
+}
+
+# node.hamdy.app — Pterodactyl Wings. Wings runs on the HOST, not in a
+# container, so this crosses the bridge to the host gateway rather than
+# naming a service. Port 8081 because Pi-hole's admin UI already has 8080.
+#
+# Carries the browser's console websocket as well as the panel's API calls;
+# Caddy and Cloudflare both upgrade these transparently, so no extra config.
+# Uploads through here are capped at 100 MB by Cloudflare's free plan — use
+# SFTP on the LAN for anything larger.
+http://node.hamdy.app {
+    reverse_proxy 172.17.0.1:8081
+}

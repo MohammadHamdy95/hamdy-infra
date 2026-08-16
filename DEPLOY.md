@@ -185,3 +185,68 @@ docker compose -f compose/docker-compose.yml up -d
 ```bash
 docker compose -f compose/docker-compose.yml up -d --force-recreate tiny-backend
 ```
+
+## Game servers (Pterodactyl)
+
+A second, independent stack. It is deliberately **not** part of `make update`,
+because that stops and rebuilds everything and would drop players out of a
+running game. Overview and gotchas: [`compose/pterodactyl/README.md`](compose/pterodactyl/README.md).
+
+```bash
+make game        # start the panel stack
+make game-down   # stop it (running game servers are Wings', and keep running)
+make game-logs
+```
+
+Secrets live in `compose/pterodactyl/.env` (its own file, not `compose/.env`) —
+copy `compose/pterodactyl/.env.example` and fill it in.
+
+### Wings
+
+Wings is **not** a container. It runs as a systemd unit on the host because it
+drives the host Docker daemon to create game-server containers.
+
+```bash
+sudo systemctl status wings
+sudo journalctl -u wings -f
+```
+
+Config is `/etc/pterodactyl/config.yml` (mode 600 — it holds the node token).
+Two values in it are hand-tuned for this host and are **not** what the panel
+would generate:
+
+- `api.port: 8081` — Pi-hole owns 8080 on this machine
+- `docker.network.*` on `172.22.0.0/16` — Wings defaults to 172.18, which is
+  already taken here
+
+Upgrading Wings:
+
+```bash
+sudo systemctl stop wings
+sudo curl -L -o /usr/local/bin/wings \
+  "https://github.com/pterodactyl/wings/releases/latest/download/wings_linux_amd64"
+sudo chmod 755 /usr/local/bin/wings
+sudo systemctl start wings
+```
+
+Do **not** regenerate the node config from the panel to "fix" a problem — it
+rewrites `api.port` to the panel's Daemon Port (443) and Wings will try to bind
+443 on the host. If you do regenerate, re-apply the two values above.
+
+Upgrading the panel: bump the pinned tag in `compose/pterodactyl/compose.yaml`
+and `make game`. The image runs migrations on boot.
+
+### The one forwarded port
+
+TCP 25565 → 192.168.1.10 on the AT&T gateway (Firewall → NAT/Gaming), plus the
+grey-cloud `mc.hamdy.app` A record. Why this breaks the tunnel-only rule, what
+is and isn't exposed, and the gateway quirk that makes allocations use
+`0.0.0.0`: [`decisions/0002`](decisions/0002-port-forward-for-minecraft.md).
+
+Changing the gateway needs its **Device Access Code**, printed on the unit.
+
+Checking it from outside (never trust a LAN test — NAT hairpin lies):
+
+```bash
+curl -s https://api.mcstatus.io/v2/status/java/mc.hamdy.app
+```
