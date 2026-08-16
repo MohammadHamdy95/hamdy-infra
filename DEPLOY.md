@@ -4,6 +4,13 @@ How to get the platform running on the server: get the code, create the
 cloud resources once, update them later as needed, and start/stop the
 services day to day.
 
+The platform runs on **hamdyserver** (`ssh mo@192.168.1.10`), in
+`/opt/stacks/hamdy-platform/`. That host also runs Pi-hole, which is
+why its Docker daemon has explicit DNS configured in
+`/etc/docker/daemon.json` — the host resolver is 127.0.0.1, which
+BuildKit containers cannot reach, so `docker build` fails with
+`UnknownHostException` without it.
+
 Two different machines are involved and it's worth being clear about
 which does what:
 
@@ -31,7 +38,7 @@ sibling layout is required — `docker-compose.yml` builds each app from
 server, in whatever parent directory you want the platform to live in:
 
 ```bash
-mkdir -p hamdy-platform && cd hamdy-platform
+sudo mkdir -p /opt/stacks/hamdy-platform && sudo chown -R $USER /opt/stacks/hamdy-platform && cd /opt/stacks/hamdy-platform
 for repo in hamdy-app tiny-frontend tiny-backend paste-frontend paste-backend hamdy-infra; do
   gh repo clone MohammadHamdy95/$repo
 done
