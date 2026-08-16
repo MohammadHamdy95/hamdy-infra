@@ -186,6 +186,46 @@ docker compose -f compose/docker-compose.yml up -d
 docker compose -f compose/docker-compose.yml up -d --force-recreate tiny-backend
 ```
 
+## SSH access
+
+Port 22 is forwarded, so the server is reachable from anywhere:
+
+```bash
+ssh mo@107.219.133.158
+```
+
+**Key authentication only — passwords are disabled.** Currently exactly one
+machine has keys (the MacBook Pro, RSA + ed25519). Adding another machine
+means appending its public key to `~mo/.ssh/authorized_keys`, which needs LAN
+or console access:
+
+```bash
+# from the new machine, having run ssh-keygen -t ed25519:
+ssh-copy-id -i ~/.ssh/id_ed25519.pub mo@192.168.1.10   # only works on the LAN
+```
+
+Config lives in `/etc/ssh/sshd_config.d/01-hardening.conf`. **The `01-` prefix
+matters** — sshd takes the first occurrence of a keyword and `50-cloud-init.conf`
+sets `PasswordAuthentication yes`, so a higher-numbered file is silently
+ignored. After any change:
+
+```bash
+sudo sshd -t && sudo sshd -T | grep -i passwordauth && sudo systemctl reload ssh
+```
+
+Use `reload`, never `restart` — reload keeps your current session alive if the
+config is broken, and a broken sshd on this box means walking to it.
+
+fail2ban watches the journal (not `auth.log`, which Ubuntu 26.04 no longer
+writes) and bans brute-forcers via ufw:
+
+```bash
+sudo fail2ban-client status sshd
+```
+
+Rationale, the full verified list of open ports, and how to revert:
+[`decisions/0003`](decisions/0003-ssh-exposed-key-only.md).
+
 ## Game servers (Pterodactyl)
 
 A second, independent stack. It is deliberately **not** part of `make update`,

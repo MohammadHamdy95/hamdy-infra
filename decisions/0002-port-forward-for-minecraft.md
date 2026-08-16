@@ -32,11 +32,16 @@ else (a VPS, defeating the point), or require every player to run a VPN client
 
 ## What is actually exposed
 
+> **Superseded in part.** This table was accurate when written. SSH (22) was
+> later exposed by [ADR 0003](0003-ssh-exposed-key-only.md), and 80/443 by the
+> BES migration. See ADR 0003 for the current, verified list. What remains true
+> here is that *this* ADR forwards exactly one port.
+
 | | |
 |---|---|
-| Forwarded | **TCP 25565 only**, to 192.168.1.10, via one NAT/Gaming rule |
-| Not forwarded | SFTP (2022), Wings API (8081), the panel, SSH, everything else |
-| In public DNS | `mc.hamdy.app` → the house IP. Every other record still points at the tunnel. |
+| Forwarded by this ADR | **TCP 25565 only**, via one NAT/Gaming rule |
+| Not forwarded | SFTP (2022), Wings API (8081), the panel, databases |
+| In public DNS | `mc.hamdy.app` → the house IP. Every hamdy.app record still points at the tunnel. |
 | Gateway | IP Passthrough **off**, NAT Default Server **off** — no accidental DMZ |
 
 ## Mitigations
