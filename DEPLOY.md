@@ -279,7 +279,7 @@ and `make game`. The image runs migrations on boot.
 ### The one forwarded port
 
 TCP 25565 → 192.168.1.10 on the AT&T gateway (Firewall → NAT/Gaming), plus the
-grey-cloud `mc.hamdy.app` A record. Why this breaks the tunnel-only rule, what
+grey-cloud `cosmosworld.hamdy.app` A record. Why this breaks the tunnel-only rule, what
 is and isn't exposed, and the gateway quirk that makes allocations use
 `0.0.0.0`: [`decisions/0002`](decisions/0002-port-forward-for-minecraft.md).
 
@@ -288,5 +288,5 @@ Changing the gateway needs its **Device Access Code**, printed on the unit.
 Checking it from outside (never trust a LAN test — NAT hairpin lies):
 
 ```bash
-curl -s https://api.mcstatus.io/v2/status/java/mc.hamdy.app
+curl -s https://api.mcstatus.io/v2/status/java/cosmosworld.hamdy.app
 ```

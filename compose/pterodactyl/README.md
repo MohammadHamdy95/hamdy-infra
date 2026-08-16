@@ -1,7 +1,7 @@
 # Pterodactyl — game servers
 
 Runs the game-server control panel at **panel.hamdy.app** and the Minecraft
-server players reach at **mc.hamdy.app**.
+server players reach at **cosmosworld.hamdy.app**.
 
 ## Why this is a separate stack
 
@@ -23,7 +23,7 @@ make game-ps
 |---|---|---|
 | `panel` | container, this stack | Pterodactyl web UI. No host port; Caddy reaches it over `hamdy-platform_web`. |
 | `database` / `cache` | containers, internal only | MariaDB + Redis. Never published. |
-| `ddns` | container, this stack | Keeps the `mc.hamdy.app` A record on the current home IP. |
+| `ddns` | container, this stack | Keeps the `cosmosworld.hamdy.app` A record on the current home IP. |
 | **`wings`** | **systemd on the host** | Not in this stack. `systemctl status wings`. |
 
 Wings drives the host Docker daemon to spawn game-server containers, so
@@ -33,7 +33,7 @@ plain binary — see `DEPLOY.md`.
 ## Traffic split
 
 ```
-players ──► mc.hamdy.app (grey cloud, A) ──► home IP :25565 ──► gateway NAT ──► server
+players ──► cosmosworld.hamdy.app (grey cloud, A) ──► home IP :25565 ──► gateway NAT ──► server
 you     ──► panel.hamdy.app ─┐
             node.hamdy.app ──┴─► Cloudflare ─► existing tunnel ─► Caddy ─┬─► panel:80
                                                                         └─► host :8081 (wings)

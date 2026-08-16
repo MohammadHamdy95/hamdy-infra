@@ -1,4 +1,4 @@
-# Pterodactyl — game server management for mc.hamdy.app.
+# Pterodactyl — game server management for cosmosworld.hamdy.app.
 #
 # Deliberately a SEPARATE stack from the platform's docker-compose.yml:
 # `make update` does prod-down + prod, which would kill a live Minecraft
@@ -102,7 +102,7 @@ services:
 
   # --- dynamic DNS for the one unproxied record ------------------------
   #
-  # mc.hamdy.app is an A record pointing at this house's public IP (see
+  # cosmosworld.hamdy.app is an A record pointing at this house's public IP (see
   # decisions/0002). AT&T hands out a dynamic address, so when it rotates
   # the record has to follow or nobody can connect. Scoped to that single
   # hostname — it never touches the proxied records Terraform owns.
@@ -115,7 +115,7 @@ services:
     security_opt: [no-new-privileges:true]
     environment:
       CLOUDFLARE_API_TOKEN: ${CF_DDNS_TOKEN}
-      DOMAINS: mc.hamdy.app
+      DOMAINS: cosmosworld.hamdy.app
       IP4_PROVIDER: cloudflare.trace
       IP6_PROVIDER: none      # the A record is what players resolve
       PROXIED: "false"        # must stay grey-cloud; Minecraft is raw TCP

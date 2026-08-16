@@ -35,7 +35,7 @@ variable "apps" {
 # stack rewrites this record when that happens, so a stale default here is
 # self-correcting; Terraform will just show a drift on the next plan.
 variable "home_ip" {
-  description = "Public IPv4 of the home server (mc.hamdy.app A record)"
+  description = "Public IPv4 of the home server (cosmosworld.hamdy.app A record)"
   type        = string
   default     = "107.219.133.158"
 }
@@ -43,5 +43,5 @@ variable "home_ip" {
 variable "game_subdomain" {
   description = "Subdomain players connect to"
   type        = string
-  default     = "mc"
+  default     = "cosmosworld"
 }

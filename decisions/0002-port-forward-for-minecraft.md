@@ -6,7 +6,7 @@
 
 Run game servers on the home server via Pterodactyl, and expose **exactly one
 inbound port** — TCP 25565 — through a NAT rule on the AT&T gateway.
-`mc.hamdy.app` is an **unproxied (grey-cloud) A record** pointing at the house's
+`cosmosworld.hamdy.app` is an **unproxied (grey-cloud) A record** pointing at the house's
 public IP.
 
 Everything else about the setup keeps ADR 0001's shape: the Pterodactyl panel
@@ -41,7 +41,7 @@ else (a VPS, defeating the point), or require every player to run a VPN client
 |---|---|
 | Forwarded by this ADR | **TCP 25565 only**, via one NAT/Gaming rule |
 | Not forwarded | SFTP (2022), Wings API (8081), the panel, databases |
-| In public DNS | `mc.hamdy.app` → the house IP. Every hamdy.app record still points at the tunnel. |
+| In public DNS | `cosmosworld.hamdy.app` → the house IP. Every hamdy.app record still points at the tunnel. |
 | Gateway | IP Passthrough **off**, NAT Default Server **off** — no accidental DMZ |
 
 ## Mitigations
@@ -61,7 +61,7 @@ else (a VPS, defeating the point), or require every player to run a VPN client
 
 ## Consequences
 
-- The home IP is discoverable via `mc.hamdy.app`. Accepted: it is one port, and
+- The home IP is discoverable via `cosmosworld.hamdy.app`. Accepted: it is one port, and
   the address is meant to be handed to players anyway.
 - The IP is dynamic. A `cloudflare-ddns` container in the Pterodactyl stack
   rewrites the record within ~5 minutes of a change; the Terraform resource
