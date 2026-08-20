@@ -22,6 +22,7 @@ variable "apps" {
     "@"     = "hamdy-app - flagship portfolio"
     "tiny"  = "URL shortener (UI + short links)"
     "paste" = "paste app (UI + API, path-routed)"
+    "docs"  = "OpenShare API documentation publishing service"
     "panel" = "Pterodactyl panel (game server management UI)"
     "node"  = "Pterodactyl Wings API + console websocket"
   }

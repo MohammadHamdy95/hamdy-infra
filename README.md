@@ -8,13 +8,13 @@ See the workspace-level `HLD.md` for the full design.
 
 ```
 compose/
-├── docker-compose.yml   # the whole platform: Caddy, cloudflared, apps, Cassandra
+├── docker-compose.yml   # Caddy, cloudflared, apps, Cassandra, PostgreSQL
 ├── Caddyfile            # hostname → container routing
 └── cloudflared/         # tunnel config
 terraform/
 ├── cloudflare/          # DNS records, tunnel, proxy/TLS rules for all subdomains
 └── aws/                 # DynamoDB links table + IAM for the shortener backend
-backup/                  # nightly Cassandra snapshot scripts
+backup/                  # datastore backup scripts and restore instructions
 decisions/               # ADRs — one short md per big choice
 ```
 
@@ -28,7 +28,8 @@ the relevant values into:
 - your shell, ad-hoc, before `terraform apply` (Cloudflare token, AWS
   deployer credentials)
 - `compose/.env` (gitignored; see `compose/.env.example`) — the tunnel
-  token and the shortener's app-runtime AWS credentials
+  token, the shortener's app-runtime AWS credentials, and OpenShare's
+  internal PostgreSQL password
 
 **The two AWS credential pairs are different identities** — your own
 deployer credentials (used to run `terraform apply`, needs DynamoDB/IAM
@@ -41,7 +42,7 @@ in separate env vars; see `.env.example` for the full explanation.
 The dev stack runs the entire platform on your machine. It expects the app
 repos checked out as **siblings** of this repo (the workspace layout), builds
 them from source, and swaps cloud pieces for local stand-ins (DynamoDB Local,
-Cassandra in a container).
+Cassandra, and PostgreSQL containers).
 
 ```
 make dev        # build + start everything
@@ -56,6 +57,7 @@ Then open (browsers resolve `*.localhost` to 127.0.0.1 automatically):
 | http://hamdy.localhost | portfolio |
 | http://tiny.localhost | shortener UI (`/api/*` → backend, other paths → redirect) |
 | http://paste.localhost | paste UI (`/v1/*` → backend, other paths → UI) |
+| http://docs.localhost | OpenShare (`/api/*` → backend, other paths → UI) |
 
 Same Caddy routing shape as prod (`Caddyfile.dev` mirrors `Caddyfile`), so if
 it works locally, the prod wiring is the same. For CLI testing use

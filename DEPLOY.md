@@ -17,7 +17,7 @@ which does what:
 - **Your own machine** — runs `terraform apply`. Terraform only talks to
   the Cloudflare and AWS APIs over the internet; it has no reason to run
   on the server itself.
-- **The server** — runs the six repos as one Docker Compose stack. It
+- **The server** — runs the eight platform repos as one Docker Compose stack. It
   only needs the values Terraform produced, copied into its `.env`.
 
 ## Prerequisites
@@ -32,14 +32,14 @@ GitHub, to run the two `terraform apply`s.
 
 ## Get the code
 
-All six repos are private, on GitHub as siblings of each other (that
+All eight platform repos are on GitHub as siblings of each other (that
 sibling layout is required — `docker-compose.yml` builds each app from
 `../../<repo>` relative to `hamdy-infra/compose/`). Run this once on the
 server, in whatever parent directory you want the platform to live in:
 
 ```bash
 sudo mkdir -p /opt/stacks/hamdy-platform && sudo chown -R $USER /opt/stacks/hamdy-platform && cd /opt/stacks/hamdy-platform
-for repo in hamdy-app tiny-frontend tiny-backend paste-frontend paste-backend hamdy-infra; do
+for repo in hamdy-app tiny-frontend tiny-backend paste-frontend paste-backend apidocs-frontend apidocs-backend hamdy-infra; do
   gh repo clone MohammadHamdy95/$repo
 done
 ```
@@ -99,8 +99,9 @@ Run from **your own machine**, not the server.
    cp .env.example .env
    ```
 
-   Fill in the three values from steps 2–3: `TUNNEL_TOKEN`,
-   `TINY_AWS_ACCESS_KEY_ID`, `TINY_AWS_SECRET_ACCESS_KEY`.
+   Fill in `TUNNEL_TOKEN`, `TINY_AWS_ACCESS_KEY_ID`,
+   `TINY_AWS_SECRET_ACCESS_KEY`, and a newly generated
+   `APIDOCS_POSTGRES_PASSWORD` (`openssl rand -base64 32`).
    However you copy them over (scp, paste over SSH, a password manager),
    never commit this file — it's gitignored, and it should stay that way.
 
@@ -165,7 +166,7 @@ docker compose -f compose/docker-compose.yml logs -f      # follow all logs
 docker compose -f compose/docker-compose.yml logs -f paste-backend   # just one service
 ```
 
-**Picking up new app code** — pull all six repos and restart in one step
+**Picking up new app code** — pull all eight platform repos and restart in one step
 (run from `hamdy-infra`, assumes `gh auth login` was already done):
 
 ```bash
