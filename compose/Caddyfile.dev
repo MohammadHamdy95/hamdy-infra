@@ -28,13 +28,3 @@ http://paste.localhost {
         reverse_proxy paste-frontend:80
     }
 }
-
-# docs.localhost — OpenShare API documentation publishing service
-http://docs.localhost {
-    handle /api/* {
-        reverse_proxy apidocs-backend:8080
-    }
-    handle {
-        reverse_proxy apidocs-frontend:80
-    }
-}

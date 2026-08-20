@@ -32,16 +32,6 @@ http://paste.hamdy.app {
     }
 }
 
-# docs.hamdy.app — OpenShare: /api/* → API, everything else → static SPA
-http://docs.hamdy.app {
-    handle /api/* {
-        reverse_proxy apidocs-backend:8080
-    }
-    handle {
-        reverse_proxy apidocs-frontend:80
-    }
-}
-
 # panel.hamdy.app — Pterodactyl. Lives in its own stack (see
 # pterodactyl/compose.yaml) but joins this stack's `web` network, so it
 # resolves by service name like any local container.
