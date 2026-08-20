@@ -50,3 +50,16 @@ http://panel.hamdy.app {
 http://node.hamdy.app {
     reverse_proxy 172.17.0.1:8081
 }
+
+# spec.hamdy.app — /v1/* → API, everything else → UI. Same single-origin
+# shape as paste, and for the same reason: api.spec.hamdy.app would be a
+# two-level subdomain, which Cloudflare's free-plan certificate does not
+# cover.
+http://spec.hamdy.app {
+    handle /v1/* {
+        reverse_proxy spec-backend:8080
+    }
+    handle {
+        reverse_proxy spec-frontend:80
+    }
+}

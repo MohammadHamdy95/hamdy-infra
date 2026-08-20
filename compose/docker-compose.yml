@@ -67,7 +67,31 @@ services:
       PASTE_PUBLIC_URL: https://paste.hamdy.app
       PASTE_API_PUBLIC_URL: https://paste.hamdy.app
     depends_on:
+      spec-frontend:
+    build: ../../spec-frontend
+    restart: unless-stopped
+    networks:
+      - web
+
+  spec-backend:
+    build: ../../spec-backend
+    restart: unless-stopped
+    environment:
+      SPRING_CASSANDRA_CONTACT_POINTS: cassandra
+      SPRING_CASSANDRA_PORT: "9042"
+      SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
+      # Its own keyspace: shares the Cassandra node with paste, but not its
+      # tables. Two apps in one keyspace would couple their schemas.
+      SPRING_CASSANDRA_KEYSPACE_NAME: spec
+      SPEC_PUBLIC_URL: https://spec.hamdy.app
+    depends_on:
       cassandra:
+        condition: service_healthy
+    networks:
+      - web
+      - internal
+
+  cassandra:
         condition: service_healthy
     networks:
       - web
