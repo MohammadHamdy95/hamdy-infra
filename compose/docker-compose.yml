@@ -114,6 +114,27 @@ services:
     environment:
       NODE_ENV: production
       PORT: "3000"
+    # Resolve DNS directly, bypassing the daemon's list.
+    #
+    # /etc/docker/daemon.json still has "192.168.1.10" first -- this host's
+    # address on the old AT&T LAN, dead since the move to 192.168.50.0/24.
+    # Docker's embedded resolver tries it, waits, then falls back to 1.1.1.1,
+    # so every container lookup costs ~4s (measured 4026ms here against 31ms
+    # on the host).
+    #
+    # Most services never noticed: they resolve once at startup and hold the
+    # connection. This one resolves the IPTV provider repeatedly -- channel
+    # lists, EPG pulls, stream probes -- against a 10s client timeout, so the
+    # penalty stacked up and requests failed with UND_ERR_CONNECT_TIMEOUT.
+    # Channels appeared to "not load".
+    #
+    # This is a targeted override, not the real fix: daemon.json is the actual
+    # bug and every container on the host still pays for it. Correcting it
+    # needs a Docker daemon restart, which stops every container, so it wants
+    # a maintenance window. Remove this block once that is done.
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
     volumes:
       # SQLite lives here (users, provider config, favourites, EPG cache), so
       # this volume IS the app's state — everything else is disposable.
