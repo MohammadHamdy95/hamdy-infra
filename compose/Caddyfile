@@ -51,16 +51,6 @@ http://node.hamdy.app {
     reverse_proxy 172.17.0.1:8081
 }
 
-# play.hamdy.app — NodeCast TV (live TV / EPG / VOD front-end).
-#
-# Video responses are long-lived and the player opens a websocket for state;
-# Caddy and the tunnel both upgrade and stream these transparently, so no
-# extra directives are needed. Streaming is server -> client only, so the
-# free plan's 100 MB upload cap (see node.hamdy.app) does not apply here.
-http://play.hamdy.app {
-    reverse_proxy nodecast:3000
-}
-
 # spec.hamdy.app — /v1/* → API, everything else → UI. Same single-origin
 # shape as paste, and for the same reason: api.spec.hamdy.app would be a
 # two-level subdomain, which Cloudflare's free-plan certificate does not

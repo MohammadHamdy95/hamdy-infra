@@ -25,7 +25,11 @@ variable "apps" {
     "spec"  = "OpenAPI spec sharing (UI + API, path-routed)"
     "panel" = "Pterodactyl panel (game server management UI)"
     "node"  = "Pterodactyl Wings API + console websocket"
-    "play"  = "NodeCast TV - live TV / EPG / VOD streaming UI"
+    # NOTE: play.hamdy.app (NodeCast TV) is deliberately NOT here. Cloudflare's
+    # free plan is not a video CDN, so it is a grey-cloud CNAME to bes.ninja,
+    # served directly by bes-master's Caddy from hamdy-home's sites-enabled
+    # drop-in -- the same arrangement as desktop.hamdy.app. Adding it back to
+    # this map would recreate the proxied record and pull it into the tunnel.
   }
 }
 
