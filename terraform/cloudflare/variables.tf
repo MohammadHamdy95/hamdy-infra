@@ -25,6 +25,7 @@ variable "apps" {
     "spec"  = "OpenAPI spec sharing (UI + API, path-routed)"
     "panel" = "Pterodactyl panel (game server management UI)"
     "node"  = "Pterodactyl Wings API + console websocket"
+    "play"  = "NodeCast TV - live TV / EPG / VOD streaming UI"
   }
 }
 

@@ -97,6 +97,43 @@ services:
       - web
       - internal
 
+  # play.hamdy.app — NodeCast TV. Browser front-end for an Xtream Codes /
+  # M3U IPTV provider: live TV, EPG, and VOD, transcoding with FFmpeg when a
+  # client cannot play the source stream directly.
+  #
+  # PINNED BY DIGEST, not :latest. ghcr publishes only `latest`, `main` and
+  # commit-sha tags for this project — there is no semver tag to track, and
+  # `latest` is rebuilt in place, so following it would silently change the
+  # running version on every redeploy. The digest below is what `latest`
+  # resolved to on 2026-09-04 (release line v2.1.1). To upgrade: re-resolve
+  # the digest and change it here, so the version bump is one reviewable
+  # commit and a rollback is `git revert`.
+  nodecast:
+    image: ghcr.io/technomancer702/nodecast-tv@sha256:caf34492517f5a827ca75e8d27d5a9a65155c12671d02ac335060cfc4df151fc
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+    volumes:
+      # SQLite lives here (users, provider config, favourites, EPG cache), so
+      # this volume IS the app's state — everything else is disposable.
+      - nodecast_data:/app/data
+    # Intel QuickSync. The host is a Core Ultra 9 285K with an integrated GPU,
+    # so transcodes land on the iGPU instead of burning cores the rest of the
+    # platform needs. group_add is required as well as the device: /dev/dri/
+    # renderD128 is root:render (gid 991) and the container does not run as
+    # root, so without the group it can see the device but not open it.
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "991"   # render
+    # No published port — Caddy reaches it over `web` by service name, like
+    # every other app here. It needs outbound access to the IPTV provider,
+    # which `web` already allows; it must NOT be on `internal`, which is the
+    # datastore-only network.
+    networks:
+      - web
+
   # --- datastores (internal network ONLY, never published to host) ---
 
   cassandra:
@@ -125,3 +162,4 @@ volumes:
   caddy_data:
   caddy_config:
   cassandra_data:
+  nodecast_data:
