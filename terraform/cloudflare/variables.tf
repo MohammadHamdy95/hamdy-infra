@@ -25,11 +25,18 @@ variable "apps" {
     "spec"  = "OpenAPI spec sharing (UI + API, path-routed)"
     "panel" = "Pterodactyl panel (game server management UI)"
     "node"  = "Pterodactyl Wings API + console websocket"
-    # NOTE: play.hamdy.app (NodeCast TV) is deliberately NOT here. Cloudflare's
-    # free plan is not a video CDN, so it is a grey-cloud CNAME to bes.ninja,
-    # served directly by bes-master's Caddy from hamdy-home's sites-enabled
-    # drop-in -- the same arrangement as desktop.hamdy.app. Adding it back to
-    # this map would recreate the proxied record and pull it into the tunnel.
+    # NOTE: play.hamdy.app is gone as of 2026-09-05 -- the record is deleted and
+    # nothing serves the name. It ran NodeCast TV, which has been replaced by
+    # ninja-player on the bes platform at play.bes.ninja (its own repo, built
+    # and deployed by bes-infra). The service moved because it became a
+    # customer-facing business service rather than a personal utility.
+    #
+    # Kept as a note rather than deleted outright, because the reasoning still
+    # applies to anything similar: a video host must NOT go in this map. Every
+    # entry here is a proxied tunnel record, and Cloudflare's free plan is not
+    # a video CDN -- adding one would pull streaming through the proxy. Such a
+    # host wants a grey-cloud CNAME to bes.ninja served directly by
+    # bes-master's Caddy, which is what desktop.hamdy.app still does.
   }
 }
 
