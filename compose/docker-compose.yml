@@ -31,6 +31,14 @@ services:
     networks:
       - web
 
+  cs-debug-relay:
+    build: ../../cs-debug/relay
+    restart: unless-stopped
+    environment:
+      DEBUG_RELAY_TOKEN: ${DEBUG_RELAY_TOKEN}
+    networks:
+      - web
+
   tiny-frontend:
     build: ../../tiny-frontend
     restart: unless-stopped

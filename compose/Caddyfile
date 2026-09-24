@@ -3,7 +3,12 @@
 
 # hamdy.app — flagship portfolio
 http://hamdy.app {
-    reverse_proxy hamdy-app:80
+    handle_path /debug/* {
+        reverse_proxy cs-debug-relay:8080
+    }
+    handle {
+        reverse_proxy hamdy-app:80
+    }
 }
 
 # tiny.hamdy.app — URL shortener: / → UI, /api/* and /:slug → backend

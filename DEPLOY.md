@@ -51,6 +51,13 @@ To update the code later (new commits to any app), `cd` into that repo
 and `git pull` — see [Starting and stopping the
 services](#starting-and-stopping-the-services) for picking the change up.
 
+The private CS2 map relay at `hamdy.app/debug/*` additionally builds from a
+`cs-debug` sibling checkout (`git clone https://git.hamdy.app/mo/cs-debug.git`).
+Set `DEBUG_RELAY_TOKEN` in `compose/.env` to a random 32+ character secret,
+and place that same secret in the desktop app's `CS_DEBUG_SERVE_TOKEN`
+environment variable or `serve-debug-token` app-config file. Never commit it.
+The relay has no published host port: Caddy reaches it over the `web` network.
+
 ## One-time: create the cloud resources
 
 Run from **your own machine**, not the server.
