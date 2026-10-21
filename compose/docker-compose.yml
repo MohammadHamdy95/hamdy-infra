@@ -2,7 +2,7 @@ name: hamdy-platform
 
 services:
   caddy:
-    image: caddy:2
+    image: git.hamdy.app/mo/caddy:2-trust-20261021
     restart: unless-stopped
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
@@ -12,7 +12,7 @@ services:
       - web
 
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: git.hamdy.app/mo/cloudflared:20261021-trust-20261021
     restart: unless-stopped
     command: tunnel run
     environment:

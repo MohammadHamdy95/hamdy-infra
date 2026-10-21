@@ -107,7 +107,7 @@ services:
   # the record has to follow or nobody can connect. Scoped to that single
   # hostname — it never touches the proxied records Terraform owns.
   ddns:
-    image: favonia/cloudflare-ddns:latest
+    image: git.hamdy.app/mo/cloudflare-ddns:20261021-trust-20261021
     restart: unless-stopped
     user: "1000:1000"
     read_only: true
