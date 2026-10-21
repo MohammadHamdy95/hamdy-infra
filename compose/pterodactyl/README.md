@@ -5,6 +5,19 @@ server players reach at **cosmosworld.hamdy.app**.
 
 ## Why this is a separate stack
 
+The panel retains stable application version 1.15.1 but uses the local
+`Dockerfile` to replace its embedded PHP with 8.3.36, fixing the critical
+October 2026 PHP vulnerabilities. Its internal-registry image is pinned by
+digest. Build and publish a replacement before changing the Compose reference;
+pulling the original application tag or upgrading Alpine packages does not
+replace its `/usr/local/bin/php` runtime. Verify CLI/FPM, a restored database,
+login, queues, and certificate rejection before promoting a new image.
+
+For the 2026-10-21 rollout, recovery files are under
+`/home/mo/security-maintenance/20261021/` on hamdyserver. They include a
+transaction-consistent SQL backup, the panel key/configuration volumes and
+the prior container configuration. Preserve their restricted permissions.
+
 `make update` does `prod-down` then `prod`. If Pterodactyl lived in the main
 `docker-compose.yml`, redeploying the portfolio would kick everyone off a live
 Minecraft server. Game servers have their own lifecycle, so they get their own

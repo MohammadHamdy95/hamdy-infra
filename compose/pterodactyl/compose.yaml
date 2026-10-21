@@ -18,7 +18,7 @@ name: pterodactyl
 
 services:
   panel:
-    image: ghcr.io/pterodactyl/panel:v1.15.1
+    image: git.hamdy.app/mo/pterodactyl-panel:1.15.1-php8.3.36-20261021@sha256:b4bcd21af29880bfbe4871186d73ef4aae13a3006df8c32d3984e536757163e6
     restart: unless-stopped
     environment:
       APP_URL: https://panel.hamdy.app
