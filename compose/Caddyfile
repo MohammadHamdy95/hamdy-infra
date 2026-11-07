@@ -68,3 +68,22 @@ http://spec.hamdy.app {
         reverse_proxy spec-frontend:80
     }
 }
+
+# mocode.hamdy.app — Mocode, free invite-only interview practice. Its own
+# stack (git.hamdy.app/mo/mocode, /opt/stacks/mocode), deployed by bes-infra's
+# Jenkins and its own apply timer; its two public containers join this
+# stack's `web` network, like Pterodactyl's panel. /api/* → API, everything
+# else → UI: one origin, so no CORS and a first-party session cookie.
+#
+# The backend's rate limits key on the client address, which reaches it as
+# Cloudflare's CF-Connecting-IP. Caddy passes that header through unchanged,
+# and the backend believes it only from this network (mocode decisions/0001).
+# /actuator is never routed: health stays inside the docker network.
+http://mocode.hamdy.app {
+    handle /api/* {
+        reverse_proxy mocode-backend:8080
+    }
+    handle {
+        reverse_proxy mocode-frontend:80
+    }
+}

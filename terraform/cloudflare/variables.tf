@@ -25,6 +25,8 @@ variable "apps" {
     "spec"  = "OpenAPI spec sharing (UI + API, path-routed)"
     "panel" = "Pterodactyl panel (game server management UI)"
     "node"  = "Pterodactyl Wings API + console websocket"
+    # Its own stack (git.hamdy.app/mo/mocode); Caddy routes it like the others.
+    "mocode" = "Mocode - invite-only interview practice (UI + API, path-routed)"
     # NOTE: play.hamdy.app is gone as of 2026-09-05 -- the record is deleted and
     # nothing serves the name. It ran NodeCast TV, which has been replaced by
     # ninja-player on the bes platform at play.bes.ninja (its own repo, built
