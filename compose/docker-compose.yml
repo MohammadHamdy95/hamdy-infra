@@ -49,6 +49,7 @@ services:
     build: ../../tiny-backend
     restart: unless-stopped
     environment:
+      JDK_JAVA_OPTIONS: "-XX:-UseBASE64Intrinsics"
       # Narrow IAM user from terraform/aws — NOT your deployer credentials.
       AWS_ACCESS_KEY_ID: ${TINY_AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${TINY_AWS_SECRET_ACCESS_KEY}
@@ -68,6 +69,7 @@ services:
     build: ../../paste-backend
     restart: unless-stopped
     environment:
+      JDK_JAVA_OPTIONS: "-XX:-UseBASE64Intrinsics"
       SPRING_CASSANDRA_CONTACT_POINTS: cassandra
       SPRING_CASSANDRA_PORT: "9042"
       SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
@@ -91,6 +93,7 @@ services:
     build: ../../spec-backend
     restart: unless-stopped
     environment:
+      JDK_JAVA_OPTIONS: "-XX:-UseBASE64Intrinsics"
       SPRING_CASSANDRA_CONTACT_POINTS: cassandra
       SPRING_CASSANDRA_PORT: "9042"
       SPRING_CASSANDRA_LOCAL_DATACENTER: datacenter1
@@ -111,6 +114,7 @@ services:
     image: cassandra:5
     restart: unless-stopped
     environment:
+      JDK_JAVA_OPTIONS: "-XX:-UseBASE64Intrinsics"
       CASSANDRA_CLUSTER_NAME: hamdy-platform
       HEAP_NEWSIZE: 128M
       MAX_HEAP_SIZE: 1G
